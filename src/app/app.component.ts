@@ -4,6 +4,8 @@ import { Observable } from 'rxjs';
 import { FormControl } from '@angular/forms';
 import { DecimalPipe } from '@angular/common';
 import { map, startWith } from 'rxjs/operators';
+import { LogService } from './log.service';
+import { ThrowStmt } from '@angular/compiler';
 
 function search(text: string, pipe: PipeTransform): Country[] {
   return COUNTRIES.filter(country => {
@@ -13,7 +15,7 @@ function search(text: string, pipe: PipeTransform): Country[] {
         || pipe.transform(country.population).includes(term);
   });
 }
-
+ 
 
 const COUNTRIES: Country[] = [
   {
@@ -53,15 +55,24 @@ export class AppComponent {
   countries$ : Observable<Country[]>; 
   filter = new FormControl('');
 
-  constructor(pipe: DecimalPipe){
+  constructor(
+    pipe: DecimalPipe, 
+    private logServiLogService : LogService
+    ){
     this.countries$ = this.filter.valueChanges.pipe(
       startWith(''),
       map(text => search(text, pipe))
     );
+    
+    this.getLogs(); 
+    
   }
 
-
-
+  getLogs(){
+    this.logServiLogService.getLogs(); 
+  };
 
 
 }
+
+

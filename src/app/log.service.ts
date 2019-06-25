@@ -1,8 +1,9 @@
 import { Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { HttpHeaders } from '@angular/common/http';
+import { Observable } from 'rxjs';
 
- 
+
 
 const httpOptions = {
   headers: new HttpHeaders({
@@ -17,10 +18,8 @@ const httpOptions = {
 export class LogService {
   
   // FIRST 
-  private baseUrl : string = "https://adamosoeedev.adamos-dev.com/inventory/managedObjects?pageSize=100&type=c8y_Application_6447&withTotalPages=true"; 
-  private second : string =   "https://adamosoeedev.adamos-dev.com/event/events?dateFrom=2019-06-06T16:33:52%2B03:00&dateTo=2019-06-06T16:43:52%2B03:00&fragmentType=c8y_Instance&fragmentValue=apama-oeeapp-scope-t44680917-deployment-7894c5b96-mnclx&pageSize=100&source=3637&type=c8y_LogfileRequest" ; 
+  private firstRequest : string = "https://adamosoeedev.adamos-dev.com/inventory/managedObjects?pageSize=100&type=c8y_Application_6447&withTotalPages=true"; 
   private secondRequest: string = "https://adamosoeedev.adamos-dev.com/event/events"; 
-  private parameterToSecondRequest: string; 
   private dateFrom = "2019-06-06T16:33:52%2B03:00"; 
   private dateTo = "2019-06-06T16:43:52%2B03:00" ; 
   private fragmentType: string = "c8y_Instance";
@@ -28,41 +27,54 @@ export class LogService {
   private pageSize: number = 100; 
   private source: number = 3637;
   private type = "c8y_LogfileRequest"; 
-
-  private readyUrl : string = `${this.baseUrl}events?dateFrom=${this.dateFrom}&dateTo=${this.dateTo}&fragmentType=${this.fragmentType}&fragmentValue=${this.fragmentValue}&pageSize=${this.pageSize}&source=${this.source}&type=${this.type}`; 
-  
-  
-  //SECOND
- // private baseUrl : string =  "https://adamosoeedev.adamos-dev.com/event/events?dateFrom=2019-06-06T16:33:52%2B03:00&dateTo=2019-06-06T16:43:52%2B03:00&fragmentType=c8y_Instance&fragmentValue=apama-oeeapp-scope-t44680917-deployment-7894c5b96-mnclx&pageSize=100&source=3637&type=c8y_LogfileRequest"; 
-  //private baseUrl : string = "https://adamosoeedev.adamos-dev.com/inventory/"; 
-
+  private obj ; 
 
   constructor(
     private httpClient: HttpClient  
   ) { }
 
-  getLogs(){
-    this.httpClient.get(this.baseUrl, httpOptions).subscribe(
-      (res : any) => {
-      // console.log(res);
-      // console.log(res.managedObjects[0].c8y_Subscriptions);
-      
-      console.log(res.managedObjects[0].c8y_Subscriptions.t44680917.instances);
-     // this.fragmentValue = res.managedObjects[0].c8y_Subscriptions.t44680917.instances ; 
-      console.log(this.fragmentValue);
-                              //https://adamosoeedev.adamos-dev.com/event/events?dateFrom=2019-06-06T16:33:52%2B03:00&dateTo=2019-06-06T16:43:52%2B03:00&fragmentType=c8y_Instance&fragmentValue=apama-oeeapp-scope-t44680917-deployment-7894c5b96-mnclx&pageSize=100&source=3637&type=c8y_LogfileRequest
-      let secondRequestN =   `${this.secondRequest}?dateFrom=${this.dateFrom}&dateTo=${this.dateTo}&fragmentType=${this.fragmentType}&fragmentValue=${this.fragmentValue}&pageSize=${this.pageSize}&source=${this.source}&type=${this.type}` ; 
-      console.log(secondRequestN);
+  getLogs() {
+    //First request: 
+    let secondRequestN =  `${this.secondRequest}?dateFrom=${this.dateFrom}&dateTo=${this.dateTo}&fragmentType=${this.fragmentType}&fragmentValue=${this.fragmentValue}&pageSize=${this.pageSize}&source=${this.source}&type=${this.type}` ; 
+    
+    // this.httpClient.get(this.firstRequest, httpOptions).subscribe(
+    //   (res : any) => {
+    //   console.log(res.managedObjects[0].c8y_Subscriptions.t44680917.instances);
+    //   console.log(this.fragmentValue);
+    //   let secondRequestN =  `${this.secondRequest}?dateFrom=${this.dateFrom}&dateTo=${this.dateTo}&fragmentType=${this.fragmentType}&fragmentValue=${this.fragmentValue}&pageSize=${this.pageSize}&source=${this.source}&type=${this.type}` ; 
+    //   console.log(secondRequestN);
 
-      //Second
-      this.httpClient.get(secondRequestN, httpOptions).subscribe(
-        (res2: any) => { 
-          console.log("Second request: ");
-          console.log(res2);
-          console.log("EVENTS:  ");
-          console.log(res2.events[0]);
-    }); 
-  })
+     //Second reuqest
+     return this.httpClient.get(secondRequestN, httpOptions); 
+      // .subscribe(
+      //   (res2: any) => {  
+      //     console.log("EVENTS:  ");
+      //     console.log(res2.events[0]);
+      //     console.log(res2.events[0].c8y_LogMetadata);
+
+      //     console.log("id: ", res2.events[0].id);
+      //     console.log("creation Time: ", res2.events[0].creationTime);
+      //     console.log("time: ", res2.events[0].time);
+      //     console.log("creation Time: ", res2.events[0].text);
+      //     console.log("link: ", res2.events[0].self);
+      //     console.log("type: ", res2.events[0].type);
+          
+      //     let obj = {
+      //       id : res2.events[0].id, 
+      //       time: res2.events[0].time,
+      //       link: res2.events[0].self, 
+      //       type: res2.events[0].type 
+      //     }
+      //     console.log(obj);
+      //     return obj;  
+      //     // {
+      //     //   id : res2.events[0].id, 
+      //     //   time: res2.events[0].time,
+      //     //   link: res2.events[0].self, 
+      //     //   type: res2.events[0].type 
+      //     // }
+    // }); 
+  // })
   }
 
 }

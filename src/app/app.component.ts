@@ -54,25 +54,40 @@ export class AppComponent {
 
   countries$ : Observable<Country[]>; 
   filter = new FormControl('');
+  //private logsObservable : Observable<any[]> ; 
+  private logs; 
 
   constructor(
     pipe: DecimalPipe, 
-    private logServiLogService : LogService
+    private logService : LogService
     ){
+   
+    //Example from tutorial
     this.countries$ = this.filter.valueChanges.pipe(
       startWith(''),
       map(text => search(text, pipe))
     );
-    
-    this.getLogs(); 
+  }
 
+  ngOnInit(){
+    this.getLogs(); 
+    // this.logs = this.logService.getLogs(); 
   }
 
   getLogs(){
-    this.logServiLogService.getLogs(); 
-  };
-
+    this.logService.getLogs().subscribe(
+      (res2: any) => {  
+            console.log("EVENTS:  ");
+            console.log(res2.events[0]);
+            console.log(res2.events[0].c8y_LogMetadata);
+  
+            console.log("id: ", res2.events[0].id);
+            console.log("creation Time: ", res2.events[0].creationTime);
+            console.log("time: ", res2.events[0].time);
+            console.log("creation Time: ", res2.events[0].text);
+            console.log("link: ", res2.events[0].self);
+            console.log("type: ", res2.events[0].type);
+    }); 
+  }
 
 }
-
-

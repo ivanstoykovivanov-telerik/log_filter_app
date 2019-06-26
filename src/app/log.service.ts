@@ -3,7 +3,8 @@ import { HttpClient } from '@angular/common/http';
 import { HttpHeaders } from '@angular/common/http';
 import { Observable } from 'rxjs';
 
-
+const username = "ivan.ivanov@softwareag.com" ; 
+const password = "Bollywood_800" ; 
 
 const httpOptions = {
   headers: new HttpHeaders({
@@ -12,10 +13,20 @@ const httpOptions = {
   })
 };
 
+const httpOptionsBinary = {
+  headers: new HttpHeaders({
+    'Content-Type':  'application/json',
+    'Authorization': 'Basic ' + btoa(`${username}:${password}`)
+  }), 
+  responseType : "blob" as "json"
+};
+
+
 @Injectable({
   providedIn: 'root'
 })
-export class LogService {
+export class LogService { 
+  
   
   // FIRST 
   private firstRequest : string = "https://adamosoeedev.adamos-dev.com/inventory/managedObjects?pageSize=100&type=c8y_Application_6447&withTotalPages=true"; 
@@ -34,48 +45,14 @@ export class LogService {
   ) { }
 
   getLogs() {
-    //First request: 
     let secondRequestN =  `${this.secondRequest}?dateFrom=${this.dateFrom}&dateTo=${this.dateTo}&fragmentType=${this.fragmentType}&fragmentValue=${this.fragmentValue}&pageSize=${this.pageSize}&source=${this.source}&type=${this.type}` ; 
-    
-    // this.httpClient.get(this.firstRequest, httpOptions).subscribe(
-    //   (res : any) => {
-    //   console.log(res.managedObjects[0].c8y_Subscriptions.t44680917.instances);
-    //   console.log(this.fragmentValue);
-    //   let secondRequestN =  `${this.secondRequest}?dateFrom=${this.dateFrom}&dateTo=${this.dateTo}&fragmentType=${this.fragmentType}&fragmentValue=${this.fragmentValue}&pageSize=${this.pageSize}&source=${this.source}&type=${this.type}` ; 
-    //   console.log(secondRequestN);
-
      //Second reuqest
      return this.httpClient.get(secondRequestN, httpOptions); 
-      // .subscribe(
-      //   (res2: any) => {  
-      //     console.log("EVENTS:  ");
-      //     console.log(res2.events[0]);
-      //     console.log(res2.events[0].c8y_LogMetadata);
-
-      //     console.log("id: ", res2.events[0].id);
-      //     console.log("creation Time: ", res2.events[0].creationTime);
-      //     console.log("time: ", res2.events[0].time);
-      //     console.log("creation Time: ", res2.events[0].text);
-      //     console.log("link: ", res2.events[0].self);
-      //     console.log("type: ", res2.events[0].type);
-          
-      //     let obj = {
-      //       id : res2.events[0].id, 
-      //       time: res2.events[0].time,
-      //       link: res2.events[0].self, 
-      //       type: res2.events[0].type 
-      //     }
-      //     console.log(obj);
-      //     return obj;  
-      //     // {
-      //     //   id : res2.events[0].id, 
-      //     //   time: res2.events[0].time,
-      //     //   link: res2.events[0].self, 
-      //     //   type: res2.events[0].type 
-      //     // }
-    // }); 
-  // })
   }
+
+  getBinary() {
+   return this.httpClient.get("https://adamosoeedev.adamos-dev.com/event/events/63281/binaries", httpOptionsBinary ); 
+  } 
 
 }
 

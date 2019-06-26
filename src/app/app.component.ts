@@ -51,7 +51,7 @@ const COUNTRIES: Country[] = [
   styleUrls: ['./app.component.css']
 })
 export class AppComponent {
-
+  events : []; 
   countries$ : Observable<Country[]>; 
   filter = new FormControl('');
   //private logsObservable : Observable<any[]> ; 
@@ -71,23 +71,32 @@ export class AppComponent {
 
   ngOnInit(){
     this.getLogs(); 
-    // this.logs = this.logService.getLogs(); 
+    this.getBinary(); 
   }
 
   getLogs(){
     this.logService.getLogs().subscribe(
-      (res2: any) => {  
+      (res: any) => {  
+        this.events = res.events[0];
+         
             console.log("EVENTS:  ");
-            console.log(res2.events[0]);
-            console.log(res2.events[0].c8y_LogMetadata);
+            console.log(res.events[0]);
+            console.log(res.events[0].c8y_LogMetadata);
   
-            console.log("id: ", res2.events[0].id);
-            console.log("creation Time: ", res2.events[0].creationTime);
-            console.log("time: ", res2.events[0].time);
-            console.log("creation Time: ", res2.events[0].text);
-            console.log("link: ", res2.events[0].self);
-            console.log("type: ", res2.events[0].type);
+            console.log("id: ", res.events[0].id);
+            console.log("time: ", res.events[0].time);
+            console.log("text: ", res.events[0].text);
+            console.log("link: ", res.events[0].self);
+            console.log("type: ", res.events[0].type);
     }); 
+  }
+
+  getBinary(){
+    this.logService.getBinary().subscribe(
+      (res: any) => {
+        console.log(typeof res);
+      }
+    ) 
   }
 
 }

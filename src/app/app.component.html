@@ -9,23 +9,37 @@
 <table class="table table-striped">
   <thead>
   <tr>
-    <th scope="col">#</th>
-    <th scope="col">Log</th>
-    <th scope="col">Date</th>
-    <th scope="col">Other Data</th>
+    <th scope="col">Id</th>
+    <th scope="col">Text</th>
+    <th scope="col">Link</th>
+    <th scope="col">Type</th>
   </tr>
   </thead>
+  
+  <!-- TODO:  Old version as a template: -->
+  <!-- <tbody>
+    <tr *ngFor="let country of countries$ | async; index as i">
+      <th scope="row">{{ i + 1 }}</th>
+      <td>
+        <ngb-highlight [result]="country.name" [term]="filter.value"></ngb-highlight>
+      </td>
+      <td><ngb-highlight [result]="country.area | number" [term]="filter.value"></ngb-highlight></td>
+      <td><ngb-highlight [result]="country.population | number" [term]="filter.value"></ngb-highlight></td>
+    </tr>
+  </tbody> -->
+
   <tbody>
-  <tr *ngFor="let country of countries$ | async; index as i">
-    <th scope="row">{{ i + 1 }}</th>
-    <td>
-      <!-- <img [src]="'https://upload.wikimedia.org/wikipedia/commons/' + country.flag" class="mr-2" style="width: 20px"> -->
-      <ngb-highlight [result]="country.name" [term]="filter.value"></ngb-highlight>
-    </td>
-    <td><ngb-highlight [result]="country.area | number" [term]="filter.value"></ngb-highlight></td>
-    <td><ngb-highlight [result]="country.population | number" [term]="filter.value"></ngb-highlight></td>
-  </tr>
-  </tbody>
+    <tr >
+      <!-- <th scope="row">{{ i + 1 }}</th> -->
+      <td>
+        <ngb-highlight [result]="events.id" [term]="filter.value"></ngb-highlight>
+      </td>
+      <td><ngb-highlight [result]="events.text" [term]="filter.value"></ngb-highlight></td>
+      <td><ngb-highlight [result]="events.self" [term]="filter.value"></ngb-highlight></td>
+      <td><ngb-highlight [result]="events.type" [term]="filter.value"></ngb-highlight></td>
+    </tr>
+    </tbody>
+
 </table>
 
 

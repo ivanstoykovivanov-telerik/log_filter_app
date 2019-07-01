@@ -3,8 +3,8 @@ import { HttpClient } from '@angular/common/http';
 import { HttpHeaders } from '@angular/common/http';
 import { Observable } from 'rxjs';
 
-const username = "ivan.ivanov@softwareag.com" ; 
-const password = "Bollywood_800" ; 
+const username = "" ; 
+const password = "" ; 
 
 const httpOptions = {
   headers: new HttpHeaders({

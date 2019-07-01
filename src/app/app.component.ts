@@ -1,7 +1,7 @@
 import { Component, PipeTransform } from '@angular/core';
 import { Country } from './Country';
 import { Observable } from 'rxjs';
-import { FormControl } from '@angular/forms';
+import { FormControl, FormBuilder, FormGroup } from '@angular/forms';
 import { DecimalPipe } from '@angular/common';
 import { map, startWith } from 'rxjs/operators';
 import { LogService } from './log.service';
@@ -13,7 +13,7 @@ function search(text: string, pipe: PipeTransform): Country[] {
     return country.name.toLowerCase().includes(term)
         || pipe.transform(country.area).includes(term)
         || pipe.transform(country.population).includes(term);
-  });
+  }); 
 }
  
 
@@ -52,16 +52,23 @@ const COUNTRIES: Country[] = [
 })
 export class AppComponent {
   events : []; 
+  allLogs; 
   countries$ : Observable<Country[]>; 
   filter = new FormControl('');
+  private startTime; 
+  private endTime; 
+  private startDate; 
+  private endDate; 
+  angForm: FormGroup;
   //private logsObservable : Observable<any[]> ; 
   private logs; 
 
   constructor(
+    private logService : LogService, 
+    private fb: FormBuilder,
     pipe: DecimalPipe, 
-    private logService : LogService
     ){
-   
+      this.createForm(); 
     //Example from tutorial
     this.countries$ = this.filter.valueChanges.pipe(
       startWith(''),
@@ -72,6 +79,12 @@ export class AppComponent {
   ngOnInit(){
     this.getLogs(); 
     this.getBinary(); 
+  }
+
+  createForm(){
+    this.angForm = this.fb.group({
+
+    })
   }
 
   getLogs(){
@@ -94,9 +107,29 @@ export class AppComponent {
   getBinary(){
     this.logService.getBinary().subscribe(
       (res: any) => {
-        console.log(typeof res);
+        this.createJsonFromBinary(res)
       }
     ) 
+  }
+
+  createJsonFromBinary(binary : Blob){
+    let fileReader = new FileReader();
+    fileReader.onload = (e) => {
+      console.log(fileReader.result);
+      this.allLogs = fileReader.result; 
+    }
+    let result = fileReader.readAsText(binary);
+    
+  }
+
+  onClickFind(startTime, endTime, startDate, endDate){
+    console.log("Time: ");
+    console.log(startTime);
+    console.log(endTime);
+    
+    console.log("Date :");
+    console.log(startDate._inputValue);
+    console.log(endDate._inputValue);
   }
 
 }

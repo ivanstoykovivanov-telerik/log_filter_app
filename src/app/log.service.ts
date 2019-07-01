@@ -2,9 +2,11 @@ import { Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { HttpHeaders } from '@angular/common/http';
 import { Observable } from 'rxjs';
+import  * as credentials from  './credentials';
 
-const username = "" ; 
-const password = "" ; 
+
+const username = credentials.username ; 
+const password = credentials.password ; 
 
 const httpOptions = {
   headers: new HttpHeaders({

@@ -5,7 +5,6 @@ import { FormControl, FormBuilder, FormGroup } from '@angular/forms';
 import { DecimalPipe } from '@angular/common';
 import { map, startWith } from 'rxjs/operators';
 import { LogService } from './log.service';
-import { ThrowStmt } from '@angular/compiler';
 
 function search(text: string, pipe: PipeTransform): Country[] {
   return COUNTRIES.filter(country => {
@@ -130,6 +129,64 @@ export class AppComponent {
     console.log("Date :");
     console.log(startDate._inputValue);
     console.log(endDate._inputValue);
+
+    startTime = this.fixTime(startTime) ; 
+    endTime = this.fixTime(endTime) ;
+
+    console.log(startTime);
+    console.log(endTime);
+
+    let dateFrom : string =  `${startDate._inputValue}T${startTime.hour}:${startTime.minute}:${startTime.second}%2B03:00` ; 
+    let dateTo : string =  `${endDate._inputValue}T${endTime.hour}:${endTime.minute}:${endTime.second}%2B03:00` ; 
+    
+    console.log(dateFrom);
+    console.log(dateTo);
+
+    const timeObj = {
+      dateTo : dateTo,
+      dateFrom : dateFrom
+    }; 
+    
+    this.getBinaryFinal(timeObj); 
   }
 
+  getBinaryFinal(time: {dateTo, dateFrom}){
+    this.logService.getLogsFinal(time.dateTo, time.dateFrom).subscribe(
+      (res: any) => {
+        console.log(res);
+        console.log(res.events[0]);
+        console.log(res.events[0].c8y_IsBinary.name);
+        this.createJsonFromBinary(res)
+      }
+    ) 
+  }
+
+  removeFirstZero(num){
+    num = num.toString(num)
+    console.log(num.charAt(0));
+    if(num.charAt(0) === '0' ){
+      return num.substr(1); 
+    }
+  }
+  
+  fixTime(time){
+    this.removeFirstZero(time); 
+    
+    if(time.hour < 10){
+      this.removeFirstZero(time.hour); 
+      time.hour = `0${time.hour}`; 
+    }
+    
+    if(time.minute < 10){
+      this.removeFirstZero(time.minute); 
+      time.minute = `0${time.minute}`; 
+    }
+
+    if(time.second < 10){
+      this.removeFirstZero(time.second); 
+      time.second = `0${time.second}`; 
+    }
+
+    return time; 
+  }
 }

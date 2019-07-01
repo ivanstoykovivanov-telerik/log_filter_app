@@ -29,17 +29,20 @@ const httpOptionsBinary = {
 })
 export class LogService { 
   
-  
+
   // FIRST 
   private firstRequest : string = "https://adamosoeedev.adamos-dev.com/inventory/managedObjects?pageSize=100&type=c8y_Application_6447&withTotalPages=true"; 
   private secondRequest: string = "https://adamosoeedev.adamos-dev.com/event/events"; 
-  private dateFrom = "2019-06-06T16:33:52%2B03:00"; 
-  private dateTo = "2019-06-06T16:43:52%2B03:00" ; 
+  //private dateFrom = "2019-06-06T16:33:52%2B03:00"; 
+    private dateFrom = "2019-07-01T11:02:37%2B03:00"; 
+  // private dateTo = "2019-06-06T16:43:52%2B03:00" ; 
+  private dateTo = "2019-07-01T11:12:37%2B03:00" ; 
   private fragmentType: string = "c8y_Instance";
-  private fragmentValue :string = "apama-oeeapp-scope-t44680917-deployment-7894c5b96-mnclx";    
+  private fragmentValue :string = "apama-oeeapp-scope-t44680917-deployment-7894c5b96-mnclx";  
+  private type: string = "c8y_LogfileRequest" ; 
+                                 //apama-oeeapp-scope-t44680917-deployment-5cc65d4f5f-ntdb9  
   private pageSize: number = 100; 
   private source: number = 3637;
-  private type = "c8y_LogfileRequest"; 
   private obj ; 
 
   constructor(
@@ -47,14 +50,28 @@ export class LogService {
   ) { }
 
   getLogs() {
-    let secondRequestN =  `${this.secondRequest}?dateFrom=${this.dateFrom}&dateTo=${this.dateTo}&fragmentType=${this.fragmentType}&fragmentValue=${this.fragmentValue}&pageSize=${this.pageSize}&source=${this.source}&type=${this.type}` ; 
-     //Second reuqest
+    let secondRequestN =  `${this.secondRequest}?dateFrom=${this.dateFrom}&dateTo=${this.dateTo}&fragmentType=${this.fragmentType}&pageSize=${this.pageSize}&source=${this.source}&type=${this.type}` ; 
+    //https://adamosoeedev.adamos-dev.com/event/events?fragmentValue=apama-oeeapp-scope-t44680917-deployment-5cc65d4f5f-ntdb9&dateTo=2019-07-01T11:12:37%2B03:00&fragmentType=c8y_Instance&source=3637&dateFrom=2019-07-01T11:02:37%2B03:00&type=c8y_LogfileRequest&pageSize=100&currentPage=1 
+    
+    //Second reuqest
      return this.httpClient.get(secondRequestN, httpOptions); 
   }
 
   getBinary() {
    return this.httpClient.get("https://adamosoeedev.adamos-dev.com/event/events/63281/binaries", httpOptionsBinary ); 
   } 
+
+  getLogsFinal(dateTo, dateFrom){
+    let secondRequestN = `https://adamosoeedev.adamos-dev.com/event/events?fragmentValue=apama-oeeapp-scope-t44680917-deployment-5cc65d4f5f-ntdb9&dateTo=${dateTo}&fragmentType=c8y_Instance&source=3637&dateFrom=${dateFrom}&type=c8y_LogfileRequest&pageSize=100&currentPage=1`;   
+    
+    
+    //First reuqest
+     console.log(secondRequestN);
+     return this.httpClient.get(secondRequestN, httpOptions); 
+
+     //Second Request
+
+  }
 
 }
 

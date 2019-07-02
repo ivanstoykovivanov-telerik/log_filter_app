@@ -35,19 +35,20 @@ export class AppComponent {
 
   createForm(){
     this.angForm = this.fb.group({
-
     })
   }
  
 
-  createJsonFromBinary(binary : Blob){
+  displayBinary(binary : Blob){
     let fileReader = new FileReader();
-    fileReader.onload = (e) => {
-      console.log(fileReader.result);
-      this.allLogs = fileReader.result; 
+    fileReader.onload = (event: any) => {
+      var contents = event.target.result;
+      console.log(contents);
+      let brContents = this.parseLog(contents); 
+      this.allLogs = brContents; 
+     
     }
-    let result = fileReader.readAsText(binary);
-    this.allLogs = result; 
+    fileReader.readAsText(binary);
     
   }
 
@@ -89,7 +90,7 @@ export class AppComponent {
 
        this.logService.getBinaryFile(binaryID).subscribe(
         (res: any) => {
-          this.createJsonFromBinary(res); 
+          this.displayBinary(res); 
         }
        ) 
       }
@@ -102,25 +103,34 @@ export class AppComponent {
       return number.substr(1); 
     }
   }
-  
+
   fixTime(time){
-    this.removeFirstZero(time); 
     
-    if(time.hour < 10){
+    if(Number(time.hour < 10)){
       this.removeFirstZero(time.hour); 
       time.hour = `0${time.hour}`; 
     }
     
-    if(time.minute < 10){
+    if(Number(time.minute < 10)){
       this.removeFirstZero(time.minute); 
       time.minute = `0${time.minute}`; 
     }
 
-    if(time.second < 10){
+    if(Number(time.second < 10)){
       this.removeFirstZero(time.second); 
       time.second = `0${time.second}`; 
     }
 
     return time; 
   }
+
+  parseLog(result){
+    // const regex = /([12]\d{3}-(0[1-9]|1[0-2])-(0[1-9]|[12]\d|3[01]))/;
+    // const found = 
+
+    const resultChanged = result.replace(/2019/g, "<br /> 2019"); 
+    console.log(resultChanged);
+    return resultChanged; 
+  }
+
 }

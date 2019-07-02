@@ -1,8 +1,6 @@
-<!-- <div class="container"> -->
- <!-- Test1
-<br>
- Test2 -->
-  <section>
+<section>
+  <div class="log-search-bar">
+    <div class="container">
       <div class="row">
         <div class="col-4">
           <span class="labelTime">From</span>
@@ -15,7 +13,7 @@
           </span>
         </div>
         <div class="col-4">
-            <span class="labelTime">To</span>
+          <span class="labelTime">To</span>
           <span>
             <ngb-timepicker [(ngModel)]="endTime" [seconds]="true"></ngb-timepicker>
           </span>
@@ -24,22 +22,24 @@
             <input type="text" ngbDatepicker #endDate="ngbDatepicker"/>
           </span>
         </div>
-        
         <div class="col-2">
           <button 
-            class="btn btn-primary btn-lg findBtn" 
-            (click) = "onClickFind(startTime, endTime, startDate, endDate)"
-            >Find</button>
+          class="btn btn-primary btn-lg findBtn" 
+          (click) = "onClickFind(startTime, endTime, startDate, endDate)"
+          >Find</button>
         </div>
       </div>
-  </section>
-
+    </div>
+  </div>
+</section>
 
 <div class="my-5">
   <h2>Logs: </h2>
 </div>
 <div class="my-5">
-  {{allLogs}}
+  <p>
+    {{allLogs}}
+  </p>
 </div>
 
 

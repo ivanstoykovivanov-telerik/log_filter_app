@@ -36,7 +36,9 @@ export class AppComponent {
       //this.logs$ = this.filter.valueChanges.pipe(startWith(''), map(text => this.search(text, pipe)));
   }
 
-  ngOnInit(){ }
+  ngOnInit(){
+
+   }
 
   createForm(){
     this.angForm = this.fb.group({
@@ -113,7 +115,7 @@ export class AppComponent {
     };
   }
   
-  
+
   /*
   ** Adapt the time from the user gives to 00:00:00 format
   *@param {string} time from the html component   
@@ -188,9 +190,14 @@ export class AppComponent {
     return resultChanged; 
   }
 
-//TODO: Inspect search contents element functionality
+  
 
+  /*
+  * Searches through the logs
+  */
   search(text: string): Log[]{
+    
+      //TODO: Inspect search contents element functionality
     return this.logs.filter(log => {
       const term = text.toLowerCase();
       

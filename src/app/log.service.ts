@@ -28,7 +28,8 @@ const httpOptionsBinary = {
 })
 export class LogService { 
   
-  private fragmentValue :string = "apama-oeeapp-scope-t44680917-deployment-5cc65d4f5f-ntdb9";  
+  private fragmentValue :string = "apama-oeeapp-scope-t44680917-deployment-5cc65d4f5f-ntdb9";   
+  //java oee bundle TODO: output is always there  
 
   // private firstRequest : string = "https://adamosoeedev.adamos-dev.com/inventory/managedObjects?pageSize=100&type=c8y_Application_6447&withTotalPages=true"; 
   // private secondRequest: string = "https://adamosoeedev.adamos-dev.com/event/events"; 

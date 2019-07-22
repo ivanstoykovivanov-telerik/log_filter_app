@@ -3,6 +3,7 @@ import { FormControl, FormBuilder, FormGroup } from '@angular/forms';
 import { LogService } from './log.service';
 import { Log } from './Log';
 import { DecimalPipe } from '@angular/common';
+import {NgbTimeStruct, NgbTimeAdapter} from '@ng-bootstrap/ng-bootstrap';
 
 import { Observable } from 'rxjs';
 import { map, startWith } from 'rxjs/operators';
@@ -15,7 +16,6 @@ import { map, startWith } from 'rxjs/operators';
   encapsulation: ViewEncapsulation.None,
 })
 export class AppComponent {
-  
   logs : Log[];
   filter = new FormControl('');
   angForm: FormGroup;
@@ -50,11 +50,16 @@ export class AppComponent {
   }
 
   onClickFind(startTime, endTime, startDate, endDate){
-    startTime = this.fixTime(startTime) ; 
-    endTime = this.fixTime(endTime) ;
+    console.log(startTime);
+    console.log(endTime);
     
-    let dateFrom : string =  `${startDate._inputValue}T${startTime.hour}:${startTime.minute}:${startTime.second}%2B03:00` ; 
-    let dateTo : string =  `${endDate._inputValue}T${endTime.hour}:${endTime.minute}:${endTime.second}%2B03:00` ; 
+    let adaptedStartTime = this.adapt(startTime); 
+    let adaptedEndTime = this.adapt(endTime); 
+    console.log(adaptedStartTime);
+    console.log(adaptedEndTime);
+    
+    let dateFrom : string =  `${startDate._inputValue}T${adaptedStartTime}%2B03:00` ; 
+    let dateTo : string =  `${endDate._inputValue}T${adaptedEndTime}%2B03:00` ; 
     
     console.log(dateFrom);
     console.log(dateTo);
@@ -70,6 +75,7 @@ export class AppComponent {
 
   /*
   * Get the logs from the binary file
+  * @param {object} containing the start date and time and the end date and time , given by the user
   */
   getBinary(time: {dateTo, dateFrom}){
     this.logService.getLogsFinal(time.dateTo, time.dateFrom).subscribe(
@@ -86,42 +92,36 @@ export class AppComponent {
       }
     ) 
   }
-
-  removeFirstZero(num : number){
-   let number : string = num.toString(); 
-   if(number.length == 2 &&  number.charAt(0) === '0' ){
-      return number.substr(1); 
+ 
+  
+  fromModel(value: string): NgbTimeStruct {
+    if (!value) {
+      return null;
     }
-    return number; 
+    const split = value.split(':');
+    return {
+      hour: parseInt(split[0], 10),
+      minute: parseInt(split[1], 10),
+      second: parseInt(split[2], 10)
+    };
+  }
+  
+  /*
+  ** Adapt the time from the user gives to 00:00:00 format
+  *@param {string} time from the html component   
+  */
+  adapt(time: NgbTimeStruct): string {
+    if (!time) {
+      return null;
+    }
+    return `${this.pad(time.hour)}:${this.pad(time.minute)}:${this.pad(time.second)}`;
   }
 
-  fixTime(time): {hour: string, minute: string, second: string} {
-    
-    if(Number(time.hour < 10) && time.hour.length > 2){
-      this.removeFirstZero(time.hour); 
-      time.hour = `${time.hour}`; 
-    }else {
-      time.hour = time.hour.toString(); 
-    }
-    
-    if(Number(time.minute < 10)){
-      this.removeFirstZero(time.minute); 
-      time.minute = `${time.minute}`; 
-      console.log(time.minute);
-    }else{
-      time.minute = time.minute.toString(); 
-    }
-
-    if(Number(time.second < 10)){
-      this.removeFirstZero(time.second); 
-      time.second = `${time.second}`; 
-      console.log(time.second);
-    }else{
-      time.second = time.second.toString(); 
-    }
-    return time; 
+  private pad(i: number): string {
+    return i < 10 ? `0${i}` : `${i}`;
   }
 
+  
   parseLog(result){
     // Logs displayed in "Unordered logs" section of the html
     const resultChanged = result.replace(/2019/g, "<br /><br /><span class='bg-primary text-white'>2019</span>"); 
@@ -172,9 +172,6 @@ export class AppComponent {
       startWith(''),
       map(text => this.search(text))
     )
-    
-    
-    //TODO: finish it
 
     return resultChanged; 
   }
@@ -184,9 +181,7 @@ export class AppComponent {
   search(text: string): Log[]{
     return this.logs.filter(log => {
       const term = text.toLowerCase();
-      // console.log(term);
-      // console.log(text);
-      // console.log(log.type.toLowerCase().includes("INFO"));
+      
       return log.date.includes(term) 
         || log.time.includes(term) 
         || log.type.toLowerCase().includes(term)

@@ -28,7 +28,7 @@ const httpOptionsBinary = {
 })
 export class LogService { 
   
-  private fragmentValue :string = "apama-oeeapp-scope-t44680917-deployment-5cc65d4f5f-ntdb9";   
+  private fragmentValue :string = "apama-oeeapp-scope-t44680917-deployment-5cc65d4f5f-ntdb9";   //TODO: inspect ! 
   //java oee bundle TODO: output is always there  
 
   // private firstRequest : string = "https://adamosoeedev.adamos-dev.com/inventory/managedObjects?pageSize=100&type=c8y_Application_6447&withTotalPages=true"; 
@@ -41,23 +41,28 @@ export class LogService {
   // private pageSize: number = 100; 
   // private source: number = 3637;
  
-
   constructor(
     private httpClient: HttpClient  
   ) { }
 
-
-  getLogsFinal(dateTo, dateFrom){
-    let secondRequestN = `https://adamosoeedev.adamos-dev.com/event/events?fragmentValue=${this.fragmentValue}&dateTo=${dateTo}&fragmentType=c8y_Instance&source=3637&dateFrom=${dateFrom}&type=c8y_LogfileRequest&pageSize=100&currentPage=1`;   
-    //First reuqest
-     console.log(secondRequestN);
-     return this.httpClient.get(secondRequestN, httpOptions); 
-     //Second Request
+  
+  /*
+  * 
+  */
+  getBinaryFileContent(binaryID){
+    
+    let requestN =  `https://adamosoeedev.adamos-dev.com/event/events/${binaryID}/binaries`; 
+    
+    return this.httpClient.get(requestN, httpOptionsBinary ); 
   }
 
-  getBinaryFile(binaryID){
-    let requestN =  `https://adamosoeedev.adamos-dev.com/event/events/${binaryID}/binaries`; 
-    return this.httpClient.get(requestN, httpOptionsBinary ); 
+
+  getLogs(dateTo, dateFrom){
+    
+    let secondRequestN = `https://adamosoeedev.adamos-dev.com/event/events?fragmentValue=${this.fragmentValue}&dateTo=${dateTo}&fragmentType=c8y_Instance&source=3637&dateFrom=${dateFrom}&type=c8y_LogfileRequest&pageSize=100&currentPage=1`;   
+    
+    console.log(secondRequestN);
+    return this.httpClient.get(secondRequestN, httpOptions); 
   }
 
 }

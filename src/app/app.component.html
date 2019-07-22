@@ -66,12 +66,10 @@
     <span class="badge badge-light noLogs">No logs to show at the moment</span>
   </p>
 </div>
-
 <!-- RESULTS:  -->
 <!-- LOGS IN A SEARCHABLE TABLE -->
 <div class="container">  
   <div *ngIf="logs">
-  
     <!-- Search form -->
     <form>
       <div class="form-group form-inline">
@@ -83,7 +81,6 @@
             [formControl]="filter"/>
       </div>
     </form>  
-    
     <!-- Table with logs    -->
     <table class="table table-striped">
       <thead>
@@ -115,7 +112,6 @@
         </tr>
       </tbody>  
     </table>
-
   </div>
 </div>
 

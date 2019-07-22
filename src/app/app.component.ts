@@ -16,6 +16,9 @@ import { map, startWith } from 'rxjs/operators';
   encapsulation: ViewEncapsulation.None,
 })
 export class AppComponent {
+  startTime: string = ""; 
+  endTime: string = ""; 
+  
   logs : Log[];
   filter = new FormControl('');
   angForm: FormGroup;
@@ -70,21 +73,25 @@ export class AppComponent {
     }; 
     console.log(timeObj);
     
-    this.getBinary(timeObj); 
+    this.getLogs(timeObj);   //OLD working
+    
   }
 
   /*
-  * Get the logs from the binary file
+  * Gets the binaryID based on the date and time.  
+  * In the second request gets contents of the logs from the binary file. 
+  *  
   * @param {object} containing the start date and time and the end date and time , given by the user
   */
-  getBinary(time: {dateTo, dateFrom}){
-    this.logService.getLogsFinal(time.dateTo, time.dateFrom).subscribe(
+  getLogs(time: {dateTo, dateFrom}){
+    this.logService.getLogs(time.dateTo, time.dateFrom).subscribe(
       (res: any) => {
        console.log(res);
        let binaryID = res.events[0].c8y_IsBinary.name ; 
        console.log(binaryID);
 
-       this.logService.getBinaryFile(binaryID).subscribe(
+       
+       this.logService.getBinaryFileContent(binaryID).subscribe(
         (res: any) => {
           this.displayBinary(res); 
         }
@@ -106,6 +113,7 @@ export class AppComponent {
     };
   }
   
+  
   /*
   ** Adapt the time from the user gives to 00:00:00 format
   *@param {string} time from the html component   
@@ -121,7 +129,11 @@ export class AppComponent {
     return i < 10 ? `0${i}` : `${i}`;
   }
 
-  
+
+  /*
+  ** Converts the text logs into html content
+  *@param {string} result  from the html component   
+  */
   parseLog(result){
     // Logs displayed in "Unordered logs" section of the html
     const resultChanged = result.replace(/2019/g, "<br /><br /><span class='bg-primary text-white'>2019</span>"); 

@@ -1,117 +1,120 @@
 
-<section>
-  <div class="log-search-bar">
-    <div class="container">
-      <div class="row">
-        <div class="col-4">
-          <span class="labelTime">From</span>
-          <span>
-            <ngb-timepicker 
-              [(ngModel)]="startTime" 
-              [seconds]="true">
-            </ngb-timepicker>
-          </span>
-          <span>
+<nav class="navbar navbar-expand-lg fixed-top">
+  <section>
+    <div class="log-search-bar">
+      <div class="container">
+        <div class="row">
+          <div class="col-4">
+            <span class="labelTime">From</span>
+            <span>
+              <ngb-timepicker 
+                [(ngModel)]="startTime" 
+                [seconds]="true">
+              </ngb-timepicker>
+            </span>
+            <span>
+              <button 
+                class="btn btn-primary mt-5 dateBtn" 
+                (click)="startDate.toggle()">
+                <i class="fa fa-calendar" aria-hidden="true"></i> Start Date
+              </button>  
+              <input 
+                class="form-control date"
+                type="text" 
+                ngbDatepicker 
+                #startDate="ngbDatepicker"
+                placeholder='&#xF133;'/>
+            </span>
+          </div>
+          <div class="col-4">
+            <span class="labelTime">To</span>
+            <span>
+              <ngb-timepicker 
+                [(ngModel)]="endTime" 
+                [seconds]="true">
+              </ngb-timepicker>
+            </span>
+            <span>
+              <button 
+                class="btn btn-primary mt-5 dateBtn" 
+                (click)="endDate.toggle()">
+                <i class="fa fa-calendar" aria-hidden="true"></i> End Date
+              </button>  
+              <input 
+                class="form-control date"
+                type="text" 
+                ngbDatepicker 
+                #endDate="ngbDatepicker"
+                placeholder='&#xF133;'/>
+            </span>
+          </div>
+          <div class="col-2">
             <button 
-              class="btn btn-primary my-5" 
-              (click)="startDate.toggle()">
-              <i class="fa fa-calendar" aria-hidden="true"></i> Start Date
-            </button>  
-            <input 
-              class="form-control"
-              type="text" 
-              ngbDatepicker 
-              #startDate="ngbDatepicker"
-              placeholder='&#xF133;'/>
-          </span>
-        </div>
-        <div class="col-4">
-          <span class="labelTime">To</span>
-          <span>
-            <ngb-timepicker 
-              [(ngModel)]="endTime" 
-              [seconds]="true">
-            </ngb-timepicker>
-          </span>
-          <span>
-            <button 
-              class="btn btn-primary my-5" 
-              (click)="endDate.toggle()">
-              <i class="fa fa-calendar" aria-hidden="true"></i> End Date
-            </button>  
-            <input 
-              class="form-control"
-              type="text" 
-              ngbDatepicker 
-              #endDate="ngbDatepicker"
-              placeholder='&#xF133;'/>
-          </span>
-        </div>
-        <div class="col-2">
-          <button 
-            class="btn btn-primary btn-lg findBtn" 
-            (click) = "onClickFind(startTime, endTime, startDate, endDate)">
-            Find
-          </button>
+              class="btn btn-primary btn-lg findBtn" 
+              (click) = "onClickFind(startTime, endTime, startDate, endDate)">
+              Find
+            </button>
+          </div>
         </div>
       </div>
     </div>
+  </section>
+</nav>
+<div class="container main">
+  <div class="my-5">
+    <h2 class="text-center">Logs</h2>
+    <p 
+      *ngIf="!logs"
+      class="text-center"> 
+      <span class="badge badge-light noLogs">No logs to show at the moment</span>
+    </p>
   </div>
-</section>
-<div class="my-5">
-  <h2 class="text-center">Logs</h2>
-  <p 
-    *ngIf="!logs"
-    class="text-center"> 
-    <span class="badge badge-light noLogs">No logs to show at the moment</span>
-  </p>
-</div>
-<!-- RESULTS:  -->
-<!-- LOGS IN A SEARCHABLE TABLE -->
-<div class="container">  
-  <div *ngIf="logs">
-    <!-- Search form -->
-    <form>
-      <div class="form-group form-inline">
-          <input 
-            class="form-control ml-2" 
-            placeholder='&#xF002; Search logs'
-            type="text" 
-            value='<i class="fa fa-search" aria-hidden="true"></i>'
-            [formControl]="filter"/>
-      </div>
-    </form>  
-    <!-- Table with logs    -->
-    <table class="table table-striped">
-      <thead>
-        <tr>
-          <th scope="col">#</th>
-          <th scope="col">Date</th>
-          <th scope="col">Time</th>
-          <th scope="col">Type</th>
-          <th scope="col">Content</th>
-        </tr>
-      </thead>
-      <tbody>
-        <tr *ngFor="let log of logs$ | async; index as i">
-          <td scope="row">{{ i + 1 }}</td>
-          <td>
-            <ngb-highlight [result]="log.date" [term]="filter.value"></ngb-highlight>
-          </td> 
-          <td>
-            <ngb-highlight [result]="log.time" [term]="filter.value"></ngb-highlight>
-          </td> 
-          <td>
-            <ngb-highlight [result]="log.type" [term]="filter.value"></ngb-highlight>
-          </td>  
-          <td> 
-            <span *ngFor= "let el of log.contents">
-                <ngb-highlight [result]="el" [term]="filter.value"></ngb-highlight>
-            </span>
-          </td>
-        </tr>
-      </tbody>  
-    </table>
+  <!-- RESULTS:  -->
+  <!-- LOGS IN A SEARCHABLE TABLE -->
+  <div class="container">  
+    <div *ngIf="logs">
+      <!-- Search form -->
+      <form>
+        <div class="form-group form-inline">
+            <input 
+              class="form-control ml-2" 
+              placeholder='&#xF002; Search logs'
+              type="text" 
+              value='<i class="fa fa-search" aria-hidden="true"></i>'
+              [formControl]="filter"/>
+        </div>
+      </form>  
+      <!-- Table with logs    -->
+      <table class="table table-striped">
+        <thead>
+          <tr>
+            <th scope="col">#</th>
+            <th scope="col">Date</th>
+            <th scope="col">Time</th>
+            <th scope="col">Type</th>
+            <th scope="col">Content</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr *ngFor="let log of logs$ | async; index as i">
+            <td scope="row">{{ i + 1 }}</td>
+            <td>
+              <ngb-highlight [result]="log.date" [term]="filter.value"></ngb-highlight>
+            </td> 
+            <td>
+              <ngb-highlight [result]="log.time" [term]="filter.value"></ngb-highlight>
+            </td> 
+            <td>
+              <ngb-highlight [result]="log.type" [term]="filter.value"></ngb-highlight>
+            </td>  
+            <td> 
+              <span *ngFor= "let el of log.contents">
+                  <ngb-highlight [result]="el" [term]="filter.value"></ngb-highlight>
+              </span>
+            </td>
+          </tr>
+        </tbody>  
+      </table>
+    </div>
   </div>
 </div>
-

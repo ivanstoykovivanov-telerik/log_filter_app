@@ -3,8 +3,9 @@
   <section>
     <div class="log-search-bar">
       <div class="container">
-        <div class="row">
-          <div class="col-4">
+        <!-- <form [formGroup]="dateForm"> -->
+          <div class="row">
+            <div class="col-4">
             <span class="labelTime">From</span>
             <span>
               <ngb-timepicker 
@@ -12,7 +13,7 @@
                 [seconds]="true">
               </ngb-timepicker>
             </span>
-            <span>
+            <span class="form-group">
               <button 
                 class="btn btn-primary mt-5 dateBtn" 
                 (click)="startDate.toggle()">
@@ -23,39 +24,51 @@
                 type="text" 
                 ngbDatepicker 
                 #startDate="ngbDatepicker"
+                formControlName="startDate"
+                [ngClass]="{ 'is-invalid': submitted && f.startDate.errors }"
                 placeholder='&#xF133;'/>
+                <div *ngIf="submitted && f.startDate.errors" class="invalid-feedback">
+                  <div *ngIf="f.startDate.errors.required">Start Date is required</div>
+                </div>
             </span>
-          </div>
-          <div class="col-4">
-            <span class="labelTime">To</span>
-            <span>
-              <ngb-timepicker 
-                [(ngModel)]="endTime" 
-                [seconds]="true">
-              </ngb-timepicker>
-            </span>
-            <span>
+            </div>
+            <div class="col-4">
+              <span class="labelTime">To</span>
+              <span>
+                <ngb-timepicker 
+                  [(ngModel)]="endTime" 
+                  [seconds]="true">
+                </ngb-timepicker>
+              </span>
+              <span>
+                <button 
+                  class="btn btn-primary mt-5 dateBtn" 
+                  (click)="endDate.toggle()">
+                  <i class="fa fa-calendar" aria-hidden="true"></i>End Date
+                </button>  
+                <input 
+                  class="form-control date"
+                  type="text" 
+                  ngbDatepicker 
+                  #endDate="ngbDatepicker"
+                  formControlName="endDate"
+                  [ngClass]="{ 'is-invalid': submitted && f.startDate.errors }"
+                  placeholder='&#xF133;'/>
+                  <div *ngIf="submitted && f.endDate.errors" class="invalid-feedback">
+                    <div *ngIf="f.endDate.errors.required">End Date is required</div>
+                  </div>
+              </span>
+            </div>
+            <div class="col-2">
               <button 
-                class="btn btn-primary mt-5 dateBtn" 
-                (click)="endDate.toggle()">
-                <i class="fa fa-calendar" aria-hidden="true"></i> End Date
-              </button>  
-              <input 
-                class="form-control date"
-                type="text" 
-                ngbDatepicker 
-                #endDate="ngbDatepicker"
-                placeholder='&#xF133;'/>
-            </span>
+                class="btn btn-primary btn-lg findBtn" 
+                (click) = "onClickFind(startTime, endTime, startDate, endDate)">
+                Find
+              </button>
+            </div>
           </div>
-          <div class="col-2">
-            <button 
-              class="btn btn-primary btn-lg findBtn" 
-              (click) = "onClickFind(startTime, endTime, startDate, endDate)">
-              Find
-            </button>
-          </div>
-        </div>
+          <!-- </form> -->
+
       </div>
     </div>
   </section>
@@ -69,7 +82,6 @@
       <span class="badge badge-light noLogs">No logs to show at the moment</span>
     </p>
   </div>
-  <!-- RESULTS:  -->
   <!-- LOGS IN A SEARCHABLE TABLE -->
   <div class="container">  
     <div *ngIf="logs">

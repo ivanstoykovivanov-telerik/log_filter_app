@@ -1,5 +1,5 @@
 import { Component, ViewEncapsulation, PipeTransform } from '@angular/core';
-import { FormControl, FormBuilder, FormGroup } from '@angular/forms';
+import { FormControl, FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { LogService } from './log.service';
 import { Log } from './Log';
 import { DecimalPipe } from '@angular/common';
@@ -16,12 +16,14 @@ import { map, startWith } from 'rxjs/operators';
   encapsulation: ViewEncapsulation.None,
 })
 export class AppComponent {
+  submitted: boolean; 
+
   startTime: string = ""; 
   endTime: string = ""; 
   
   logs : Log[];
   filter = new FormControl('');
-  angForm: FormGroup;
+  dateForm: FormGroup;
   private startDate: string; 
   private endDate: string; 
   logs$: Observable<Log[]>; 
@@ -30,19 +32,24 @@ export class AppComponent {
   constructor(
     pipe: DecimalPipe, 
     private logService : LogService, 
-    private fb: FormBuilder,
+    private formBuilder: FormBuilder,
     ){
       this.createForm(); 
       //this.logs$ = this.filter.valueChanges.pipe(startWith(''), map(text => this.search(text, pipe)));
   }
 
-  ngOnInit(){
-
-   }
+  ngOnInit(){}
 
   createForm(){
-    this.angForm = this.fb.group({
+    this.dateForm = this.formBuilder.group({
+      endDate: ['', Validators.required],
+      startDate: ['', Validators.required],
     })
+  }
+
+  // convenience getter for easy access to form fields
+  get f() { 
+    return this.dateForm.controls; 
   }
 
   displayBinary(binary : Blob){
@@ -55,6 +62,13 @@ export class AppComponent {
   }
 
   onClickFind(startTime, endTime, startDate, endDate){
+    this.submitted = true; 
+    
+     // stop here if form is invalid
+     if (this.dateForm.invalid) {
+      return;
+    }
+    
     console.log(startTime);
     console.log(endTime);
     

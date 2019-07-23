@@ -3,15 +3,21 @@
   <section>
     <div class="log-search-bar">
       <div class="container">
-        <!-- <form [formGroup]="dateForm"> -->
+        <form [formGroup]="dateForm">
           <div class="row">
             <div class="col-4">
             <span class="labelTime">From</span>
-            <span>
+            <span class="form-group">
               <ngb-timepicker 
-                [(ngModel)]="startTime" 
+                [formControlName]="startTime"
+                required
                 [seconds]="true">
               </ngb-timepicker>
+              <div class="small form-text text-danger" *ngIf="!ctrl.valid">
+                  <div *ngIf="ctrl.errors['required']">Start time required</div>
+                  <!-- <div *ngIf="ctrl.errors['tooLate']">Oh no, it's way too late</div>
+                  <div *ngIf="ctrl.errors['tooEarly']">It's a bit too early</div> -->
+              </div>
             </span>
             <span class="form-group">
               <button 
@@ -36,7 +42,7 @@
               <span class="labelTime">To</span>
               <span>
                 <ngb-timepicker 
-                  [(ngModel)]="endTime" 
+                [formControlName]= "endTime"
                   [seconds]="true">
                 </ngb-timepicker>
               </span>
@@ -62,12 +68,12 @@
             <div class="col-2">
               <button 
                 class="btn btn-primary btn-lg findBtn" 
-                (click) = "onClickFind(startTime, endTime, startDate, endDate)">
+                (click) = "onClickFind(startTime.value, endTime.value, startDate, endDate)">
                 Find
               </button>
             </div>
           </div>
-          <!-- </form> -->
+      </form>
 
       </div>
     </div>

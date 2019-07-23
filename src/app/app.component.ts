@@ -23,6 +23,7 @@ export class AppComponent {
   
   logs : Log[];
   filter = new FormControl('');
+  ctrl: FormControl; 
   dateForm: FormGroup;
   private startDate: string; 
   private endDate: string; 
@@ -36,6 +37,23 @@ export class AppComponent {
     ){
       this.createForm(); 
       //this.logs$ = this.filter.valueChanges.pipe(startWith(''), map(text => this.search(text, pipe)));
+      
+      this.ctrl = new FormControl('') , (control: FormControl) => {
+        const value = control.value;
+    
+        if (!value) {
+          return null;
+        }
+    
+        if (value.hour < 12) {
+          return {tooEarly: true};
+        }
+        if (value.hour > 13) {
+          return {tooLate: true};
+        }
+    
+        return null;
+      });
   }
 
   ngOnInit(){}
@@ -44,6 +62,8 @@ export class AppComponent {
     this.dateForm = this.formBuilder.group({
       endDate: ['', Validators.required],
       startDate: ['', Validators.required],
+      endTime: ['', Validators.required],
+      startTime: ['', Validators.required],
     })
   }
 
@@ -63,12 +83,13 @@ export class AppComponent {
 
   onClickFind(startTime, endTime, startDate, endDate){
     this.submitted = true; 
-    
+    console.log(startTime);
+
      // stop here if form is invalid
      if (this.dateForm.invalid) {
       return;
     }
-    
+
     console.log(startTime);
     console.log(endTime);
     

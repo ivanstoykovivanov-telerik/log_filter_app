@@ -48,9 +48,7 @@ export class LogService {
 
   getLogs(dateTo, dateFrom){
     let secondRequestN = 
-    `https://adamosoeedev.adamos-dev.com/event/events?
-    dateTo=${dateTo}&source=3637&dateFrom=${dateFrom}&type=c8y_LogfileRequest&
-    pageSize=100&currentPage=1`; 
+    `https://adamosoeedev.adamos-dev.com/event/events?dateTo=${dateTo}&source=3637&dateFrom=${dateFrom}&type=c8y_LogfileRequest&pageSize=100&currentPage=1`; 
 
     console.log(secondRequestN);
     return this.httpClient.get(secondRequestN, httpOptions); 

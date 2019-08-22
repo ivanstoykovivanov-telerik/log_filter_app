@@ -36,9 +36,7 @@ export class AppComponent {
       //this.logs$ = this.filter.valueChanges.pipe(startWith(''), map(text => this.search(text, pipe)));
   }
 
-  ngOnInit(){
-
-   }
+  ngOnInit(){}
 
   createForm(){
     this.angForm = this.fb.group({
@@ -89,7 +87,7 @@ export class AppComponent {
     this.logService.getLogs(time.dateTo, time.dateFrom).subscribe(
       (res: any) => {
        console.log(res);
-       let binaryID = res.events[0].c8y_IsBinary.name ; 
+       let binaryID = res.events[0].c8y_IsBinary.name ;  //TODO:  take all the events and fetch the bin id.   //check if it exists
        console.log(binaryID);
 
        
@@ -189,7 +187,6 @@ export class AppComponent {
 
     return resultChanged; 
   }
-
   
 
   /*

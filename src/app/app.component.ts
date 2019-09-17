@@ -24,8 +24,9 @@ export class AppComponent {
   angForm: FormGroup;
   private startDate: string; 
   private endDate: string; 
-  logs$: Observable<Log[]>; 
   pipe: DecimalPipe; 
+  logs$: Observable<Log[]>;                  //TODO: Add later for filtering the contets of the log
+
 
   constructor(
     pipe: DecimalPipe, 
@@ -36,46 +37,79 @@ export class AppComponent {
       //this.logs$ = this.filter.valueChanges.pipe(startWith(''), map(text => this.search(text, pipe)));
   }
 
+
   ngOnInit(){}
+
 
   createForm(){
     this.angForm = this.fb.group({
     })
   }
 
+
   displayBinary(binary : Blob){
     let fileReader = new FileReader();
     fileReader.onload = (event: any) => {
       var contents = event.target.result;
+      
+      //parse to html:  
       this.parseLog(contents); 
     }
     fileReader.readAsText(binary);
   }
 
+
   onClickFind(startTime, endTime, startDate, endDate){
-    console.log(startTime);
-    console.log(endTime);
-    
+    this.logs = []; 
+       
     let adaptedStartTime = this.adapt(startTime); 
     let adaptedEndTime = this.adapt(endTime); 
-    console.log(adaptedStartTime);
-    console.log(adaptedEndTime);
-    
+        
     let dateFrom : string =  `${startDate._inputValue}T${adaptedStartTime}%2B03:00` ; 
     let dateTo : string =  `${endDate._inputValue}T${adaptedEndTime}%2B03:00` ; 
-    
-    console.log(dateFrom);
-    console.log(dateTo);
-
+        
     const timeObj = {
       dateTo : dateTo,
       dateFrom : dateFrom
     }; 
-    console.log(timeObj);
     
-    this.getLogs(timeObj);   //OLD working
-    
+   // this.getLogs(timeObj);   //OLD version == working
+   this.fetchLogs(timeObj);   // MISHO's version
   }
+
+
+ /*
+ *  Fetch the logs between start and end date. 
+ */
+ fetchLogs(time: {dateTo, dateFrom}){
+  this.logService.getLogs(time.dateTo, time.dateFrom).subscribe(
+    (res: any) => {
+      let ids: number[] = [];
+      for (let event of res.events){
+        ids.push(Number(event.id));       
+      }
+      ids.sort(); 
+      for( let id of ids){
+        console.log(id);
+        this.getBinaryFileContent(id);
+      }
+      console.log(ids);
+    }
+  )
+ }
+
+
+ /*
+ *  Get the contents of a binary file 
+ */
+ getBinaryFileContent(binaryId: number){
+   this.logService.getBinaryFileContent(binaryId).subscribe(
+          (res: any) => {
+            this.displayBinary(res); 
+          }
+         ) 
+ }
+
 
   /*
   * Gets the binaryID based on the date and time.  
@@ -89,7 +123,6 @@ export class AppComponent {
        console.log(res);
        let binaryID = res.events[0].c8y_IsBinary.name ;  //TODO:  take all the events and fetch the bin id.   //check if it exists
        console.log(binaryID);
-
        
        this.logService.getBinaryFileContent(binaryID).subscribe(
         (res: any) => {
@@ -149,7 +182,6 @@ export class AppComponent {
     while ((m = regex.exec(result)) !== null) {
       // This is necessary to avoid infinite loops with zero-width matches
       arrIndices.push(m);
-      console.log(m);
       
       if(m.index !== 0 ){
         lastIndex = currentIndex;
@@ -157,13 +189,11 @@ export class AppComponent {
         
         //LOG: 
         let currentLog = result.slice(lastIndex,currentIndex); 
-        console.log(currentLog);
-
         let logElements = currentLog.split(" ");
-        console.log(logElements);
-
         const contents : string[] = logElements.slice(4, logElements[length-1]);
         
+        //TODO:  a log as a single string, 
+
         //a single log : 
         const logAsObj = new Log(logElements[0], logElements[1], logElements[2], contents ); 
         logs.push(logAsObj); 
@@ -171,14 +201,23 @@ export class AppComponent {
 
       currentIndex = m.index;
       
-      console.log(m[0]);
       if (m.index === regex.lastIndex) {
           regex.lastIndex++;
       }
-  }
-   
+    }
+  
     console.log(logs);
-    this.logs = logs;
+    for (let log of logs) {
+      
+      //TODO: check if the log exists in this.logs, 
+      // 
+      // Sort by the date of the logs  
+      console.log(log);
+      this.logs.push(log); 
+    }
+    //this.logs.concat(logs);
+    console.log("sum of logs:");
+    console.log(this.logs);
     
     this.logs$ = this.filter.valueChanges.pipe(
       startWith(''),
@@ -188,6 +227,14 @@ export class AppComponent {
     return resultChanged; 
   }
   
+
+  checkIfLogIsAlreadyAdded(log : Log){
+        
+    if(!this.logs.includes(log)){
+
+    }
+  }
+
 
   /*
   * Searches through the logs
@@ -203,6 +250,36 @@ export class AppComponent {
         || log.type.toLowerCase().includes(term)
         || log.contents.includes(term) ; 
     })
+  }
+
+
+  /*
+  * Helper function 
+  * Checks equality of objects  
+  */
+  isEquivalent(a: Log, b: Log){
+    // Create arrays of property names
+    var aProps = Object.getOwnPropertyNames(a);
+    var bProps = Object.getOwnPropertyNames(b);
+
+    // If number of properties is different,
+    // objects are not equivalent
+    if (aProps.length != bProps.length) {
+        return false;
+    }
+
+    for (var i = 0; i < aProps.length; i++) {
+        var propName = aProps[i];
+
+        // If values of same property are not equal,
+        // objects are not equivalent
+        if (a[propName] !== b[propName]) {
+            return false;
+        }
+    }
+
+    // objects are equivalent: 
+    return true;  
   }
 
 }

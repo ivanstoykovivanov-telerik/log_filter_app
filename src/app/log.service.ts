@@ -45,7 +45,7 @@ export class LogService {
     return this.httpClient.get(requestN, httpOptionsBinary ); 
   }
 
-
+  
   getLogs(dateTo, dateFrom){
     let secondRequestN = 
     `https://adamosoeedev.adamos-dev.com/event/events?dateTo=${dateTo}&source=3637&dateFrom=${dateFrom}&type=c8y_LogfileRequest&pageSize=100&currentPage=1`; 
@@ -53,6 +53,49 @@ export class LogService {
     console.log(secondRequestN);
     return this.httpClient.get(secondRequestN, httpOptions); 
   }
+
+  /* 
+      Returns an array of {logEvent, logString} objects
+  */
+ async fetchLogs(dateTo, dateFrom){
+  let eventsRequest = 
+  `https://adamosoeedev.adamos-dev.com/event/events?dateTo=${dateTo}&source=3637&dateFrom=${dateFrom}&type=c8y_LogfileRequest&pageSize=100&currentPage=1`; 
+  
+  let eventsResponse:any = await this.httpClient.get(eventsRequest, httpOptions).toPromise();
+      
+  let logPromises:Array<Promise<any>> = eventsResponse.events.map((event:any)=> {
+    return this.eventToLog(event); 
+  });
+
+  let logs:any = await Promise.all(logPromises);      
+
+  return logs;
+}	
+
+async eventToLog(event:any){
+  let binaryRequest =  `https://adamosoeedev.adamos-dev.com/event/events/${event.c8y_IsBinary.name}/binaries`;
+  try {
+    let blob:Blob = await this.httpClient.get(binaryRequest, httpOptionsBinary ).toPromise() as Blob;
+    let logString = await this.blobToString(blob);
+    return {event, logString};
+    //console.log(logString);      
+  } catch (e) {
+    console.log('error getting events: ' + e);      
+    return null;
+  }    
+}
+
+blobToString(blob:Blob){
+  let blobToStringPromise:Promise<String> = new Promise(function(resolve, reject) {
+    let fileReader = new FileReader(); 
+    fileReader.onload = (event: any) => {
+      var contents = event.target.result;
+      resolve(contents); 
+    }
+    fileReader.readAsText(blob);
+  });
+  return blobToStringPromise;
+}
 
 }
 

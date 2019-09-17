@@ -72,28 +72,31 @@ export class AppComponent {
       dateTo : dateTo,
       dateFrom : dateFrom
     }; 
+    timeObj.dateTo = "2019-09-17T14:20:00%2B03:00"; 
+    timeObj.dateFrom = "2019-09-17T13:20:00%2B03:00"
     
    // this.getLogs(timeObj);   //OLD version == working
    this.fetchLogs(timeObj);   // MISHO's version
   }
 
 
- /*
+ /* IVANS VERSION 
  *  Fetch the logs between start and end date. 
  */
  fetchLogs(time: {dateTo, dateFrom}){
-  this.logService.getLogs(time.dateTo, time.dateFrom).subscribe(
+   
+  this.logService.fetchLogs(time.dateTo, time.dateFrom).then(
     (res: any) => {
-      let ids: number[] = [];
-      for (let event of res.events){
-        ids.push(Number(event.id));       
-      }
-      ids.sort(); 
-      for( let id of ids){
-        console.log(id);
-        this.getBinaryFileContent(id);
-      }
-      console.log(ids);
+      // let ids: number[] = [];
+      // for (let event of res.events){
+      //   ids.push(Number(event.id));       
+      // }
+      // ids.sort(); 
+      // for( let id of ids){
+      //   console.log(id);
+      //   this.getBinaryFileContent(id);
+      // }
+      console.log(res);
     }
   )
  }
@@ -280,6 +283,34 @@ export class AppComponent {
 
     // objects are equivalent: 
     return true;  
+  }
+
+   /* 
+      Accepts an array of {logEvent, logString} objects
+  */
+  assembleLogFromChunks(chunksArr  ){
+    const logStatements :string[] = [] ; 
+
+    //TODO: Algorithm  for parsing the chunks
+    
+    chunksArr.reverse(); 
+    let fromDate = chunksArr[0].dateFrom; 
+    let previosChunk = null; 
+
+    chunksArr.forEach(chunk => {
+      if(previosChunk !== null && 
+        chunk.event.c8y_LogMetadata.dateFrom === previosChunk.event.c8y_LogMetadata.dateFrom  && 
+        chunk.event.c8y_LogMetadata.dateTo === previosChunk.event.c8y_LogMetadata.dateTo 
+        ){
+          console.log("Duplicate chunk: " + chunk);
+      }else{
+        //chunk.
+      }
+      
+      
+      
+    });
+   // return arrOfString
   }
 
 }

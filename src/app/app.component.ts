@@ -87,15 +87,15 @@ export class AppComponent {
    
   this.logService.fetchLogs(time.dateTo, time.dateFrom).then(
     (res: any) => {
-      // let ids: number[] = [];
-      // for (let event of res.events){
-      //   ids.push(Number(event.id));       
-      // }
-      // ids.sort(); 
-      // for( let id of ids){
-      //   console.log(id);
-      //   this.getBinaryFileContent(id);
-      // }
+      let ids: number[] = [];
+      for (let event of res.events){
+        ids.push(Number(event.id));       
+      }
+      ids.sort(); 
+      for( let id of ids){
+        console.log(id);
+        this.getBinaryFileContent(id);
+      }
       console.log(res);
     }
   )

@@ -99,7 +99,7 @@ blobToString(blob:Blob){
 
 }
 
-//TODO: see the requ in postman , and look for the events , 
+//TODO: see the requests in postman , and look for the events , 
 // events of the source object from date to date and see which of them are log request 
 // 
 

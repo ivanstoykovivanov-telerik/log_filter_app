@@ -72,9 +72,7 @@ export class AppComponent {
       dateTo : dateTo,
       dateFrom : dateFrom
     }; 
-    
-   // this.getLogs(timeObj);   //OLD version == working
-   this.fetchLogs(timeObj);   // MISHO's version
+   this.fetchLogs(timeObj);   
   }
 
 
@@ -93,7 +91,7 @@ export class AppComponent {
         console.log(id);
         this.getBinaryFileContent(id);
       }
-      console.log(ids);
+      
     }
   )
  }
@@ -195,7 +193,7 @@ export class AppComponent {
         //TODO:  a log as a single string, 
 
         //a single log : 
-        const logAsObj = new Log(logElements[0], logElements[1], logElements[2], contents ); 
+        const logAsObj = new Log(logElements[0], logElements[1], logElements[2], contents); 
         logs.push(logAsObj); 
       }
 
@@ -206,13 +204,9 @@ export class AppComponent {
       }
     }
   
-    console.log(logs);
     for (let log of logs) {
-      
       //TODO: check if the log exists in this.logs, 
-      // 
       // Sort by the date of the logs  
-      console.log(log);
       this.logs.push(log); 
     }
     //this.logs.concat(logs);
@@ -229,9 +223,8 @@ export class AppComponent {
   
 
   checkIfLogIsAlreadyAdded(log : Log){
-        
     if(!this.logs.includes(log)){
-
+      //TODO: 
     }
   }
 
